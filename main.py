@@ -4,7 +4,7 @@ from routers.routes import router as item_router
 from models.models import Base
 from routers.routes import engine
 
-app = FastAPI(title="My API", version="1.0")
+app = FastAPI(title="Fibr Quiz Api", version="1.0")
 Base.metadata.create_all(bind=engine)
 app.include_router(item_router, prefix="/api")
 

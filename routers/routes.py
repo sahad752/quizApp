@@ -167,6 +167,6 @@ async def get_quizzes(db:Session = Depends(get_db)):
 
 @router.get("/")
 async def return_home2():
-    return {"content":"Welcome to quiz app "}
+    return {"Message":"Welcome to quiz app "}
 
 # Add other routes here as needed
