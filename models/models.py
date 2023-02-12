@@ -28,7 +28,7 @@ class Quiz(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
     owner_id = Column(Integer, nullable=False)
-    question = Column(String, nullable=False)
+    question = Column(String,nullable=True)
     options = Column(JSON, nullable=False)
     answer = Column(Integer, nullable=False)
 

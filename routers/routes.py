@@ -28,7 +28,7 @@ class QuizRequest(BaseModel):
     title: str
     question: str
     owner_id : int
-    options: List[dict]
+    options: List[str]
     answer : int
 
 class QuestionRequest(BaseModel):
@@ -63,7 +63,7 @@ async def create_quiz(quiz: QuizRequest, db: Session = Depends(get_db)):
     db.add(quiz_model)
     db.commit()
     db.refresh(quiz_model)
-    return {"id": quiz_model.id, "title": quiz_model.title, "questions": quiz_model.questions}
+    return {"id": quiz_model.id, "title": quiz_model.title, "questions": quiz_model.question}
 
 
 @router.post("/register")
@@ -84,22 +84,6 @@ async def get_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
     return [{"email": user.email, "password": user.password} for user in users]
 
-
-@router.post("/quizzes")
-async def create_quiz(quiz: QuizRequest, db: Session = Depends(get_db)):
-    quiz = Quiz(**quiz.dict())
-    db.add(quiz)
-    db.commit()
-    db.refresh(quiz)
-    return {"id": quiz.id, "title": quiz.title, "description": quiz.description}
-
-@router.post("/questions")
-async def create_question(question: QuestionRequest, db: Session = Depends(get_db)):
-    question = Question(**question.dict())
-    db.add(question)
-    db.commit()
-    db.refresh(question)
-    return {"id": question.id, "text": question.text, "quiz_id": question.quiz_id}
 
 @router.get("/")
 async def return_home2():
