@@ -7,6 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 import jwt
+from auth.auth_bearer import JWTBearer
 from models.models import  Participants, User, Quiz
 from sqlalchemy.orm import sessionmaker
 
@@ -23,7 +24,7 @@ def get_db():
     finally:
         db.close()
 
-# Define the request models
+# Define the request schemas
 class QuizRequest(BaseModel):
     title: str
     question: str
@@ -141,8 +142,8 @@ async def get_users(db: Session = Depends(get_db)):
     return [{"id ": user.id,"email": user.email, "password": user.password} for user in users]
 
 
-@router.get("/participants")
-async def get_users(db: Session = Depends(get_db)):
+@router.get("/participants",dependencies=[Depends(JWTBearer())])
+async def get_users(db: Session = Depends(get_db),):
     participants = db.query(Participants).all()
     return [{"id ":user.id,"email": user.email,"name":user.name, "score": user.score} for user in participants]
 
