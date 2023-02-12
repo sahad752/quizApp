@@ -30,22 +30,13 @@ class Quiz(Base):
     owner_id = Column(Integer, nullable=False)
     question = Column(String,nullable=True)
     options = Column(JSON, nullable=False)
-    answer = Column(Integer, nullable=False)
+    answers = Column(JSON, nullable=False)
 
 
-class Question(Base):
-    __tablename__ = 'questions'
-
-    id = Column(Integer, primary_key=True)
-    text = Column(String, nullable=False)
-    quiz_id = Column(Integer, nullable=False)
-
-
-class Participant(Base):
+class Participants(Base):
     __tablename__ = "participants"
 
     id = Column(Integer, primary_key=True, index=True)
-    quiz_id = Column(Integer, index=True)
     name = Column(String)
     score = Column(Integer)
     email = Column(String, unique=True, nullable=False)
