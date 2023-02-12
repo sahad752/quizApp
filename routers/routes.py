@@ -57,7 +57,7 @@ async def login(user: UserRequest, db: Session = Depends(get_db)):
     return {"access_token": token}
 
 # Quiz endpoint
-@router.post("/api/quizzes")
+@router.post("/quizzes")
 async def create_quiz(quiz: QuizRequest, db: Session = Depends(get_db)):
     quiz_model = Quiz(title=quiz.title, question=quiz.question,options = quiz.options ,answer = quiz.answer)
     db.add(quiz_model)
