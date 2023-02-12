@@ -26,9 +26,10 @@ def get_db():
 # Define the request models
 class QuizRequest(BaseModel):
     title: str
-    description: str
-    questions: List[dict]
+    question: str
     owner_id : int
+    options: List[dict]
+    answer : int
 
 class QuestionRequest(BaseModel):
     text: str
@@ -58,7 +59,7 @@ async def login(user: UserRequest, db: Session = Depends(get_db)):
 # Quiz endpoint
 @router.post("/api/quizzes")
 async def create_quiz(quiz: QuizRequest, db: Session = Depends(get_db)):
-    quiz_model = Quiz(title=quiz.title, questions=quiz.questions)
+    quiz_model = Quiz(title=quiz.title, question=quiz.question,options = quiz.options ,answer = quiz.answer)
     db.add(quiz_model)
     db.commit()
     db.refresh(quiz_model)
