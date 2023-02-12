@@ -100,12 +100,12 @@ async def join(join:JoinRequest, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(participant_model)
         if quiz:
-            return {"message":"Successfully joined","participant_id":participant.id, "quiz_id":quiz.id, "question":quiz.question,"options":quiz.options}
+            return {"message":"Successfully joined ,answer at /api/answer","participant_id":participant_model.id, "quiz_id":quiz.id, "question":quiz.question,"options":quiz.options}
         else:
             return {"Error": "Not a valid quiz id"}
     else:
         if quiz:
-            return {"message":"participant already joined ", "participant_id":participant.id, "quiz_id":quiz.id, "quiz":quiz.question,"options":quiz.options}
+            return {"message":"participant already joined,answer at /api/answer ", "participant_id":participant.id, "quiz_id":quiz.id, "quiz":quiz.question,"options":quiz.options}
         else:
             return {"Error": "Not a valid quiz id"}
 
