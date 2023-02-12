@@ -32,6 +32,9 @@ class QuizRequest(BaseModel):
     options: List[str]
     answers : List[int]
 
+class ShareRequest(BaseModel):
+    quiz_id:int
+
 class JoinRequest(BaseModel):
     name: str
     email: str
@@ -65,7 +68,7 @@ async def login(user: UserRequest, db: Session = Depends(get_db)):
     return {"access_token": token}
 
 # Quiz endpoint
-@router.post("/create_quiz")
+@router.post("/create_quiz",dependencies=[Depends(JWTBearer())])
 async def create_quiz(quiz: QuizRequest, db: Session = Depends(get_db)):
     quiz_model = Quiz(title=quiz.title, question=quiz.question,options = quiz.options ,answers = quiz.answers,owner_id = quiz.owner_id)
     db.add(quiz_model)
@@ -73,6 +76,10 @@ async def create_quiz(quiz: QuizRequest, db: Session = Depends(get_db)):
     db.refresh(quiz_model)
     return {"id": quiz_model.id, "title": quiz_model.title, "question": quiz_model.question,"answers":quiz_model.answers}
 
+
+@router.post("/share",dependencies=[Depends(JWTBearer())])
+async def share(share:ShareRequest, db: Session = Depends(get_db)):
+    return {"message ":" you can join at /api/join using your email , name and quiz_id","quiz_id":share.quiz_id}
 
 @router.post("/join")
 async def join(join:JoinRequest, db: Session = Depends(get_db)):
