@@ -88,12 +88,12 @@ async def join(join:JoinRequest, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(participant_model)
         if quiz:
-            return { "id":participant_model.id, "question":quiz.question,"options":quiz.options}
+            return {"message":"Successfully joined","participant_id":participant.id, "quiz_id":quiz.id, "question":quiz.question,"options":quiz.options}
         else:
             return {"Error": "Not a valid quiz id"}
     else:
         if quiz:
-            return {"message":"participant already joined ", "quiz":quiz.question,"options":quiz.options}
+            return {"message":"participant already joined ", "participant_id":participant.id, "quiz_id":quiz.id, "quiz":quiz.question,"options":quiz.options}
         else:
             return {"Error": "Not a valid quiz id"}
 
@@ -144,7 +144,7 @@ async def get_users(db: Session = Depends(get_db)):
 @router.get("/participants")
 async def get_users(db: Session = Depends(get_db)):
     participants = db.query(Participants).all()
-    return [{"id ":user.id,"email": user.email, "score": user.score} for user in participants]
+    return [{"id ":user.id,"email": user.email,"name":user.name, "score": user.score} for user in participants]
 
 
 # Quiz endpoint
