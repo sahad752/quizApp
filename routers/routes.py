@@ -79,7 +79,11 @@ async def create_quiz(quiz: QuizRequest, db: Session = Depends(get_db)):
 
 @router.post("/share",dependencies=[Depends(JWTBearer())])
 async def share(share:ShareRequest, db: Session = Depends(get_db)):
-    return {"message ":" you can join at /api/join using your email , name and quiz_id","quiz_id":share.quiz_id}
+    try:
+        quiz = db.query(Quiz).filter_by(id=share.quiz_id).first()
+    except:
+        return {"Error": "Not a valid quiz id"}
+    return {"message ":" you can join at /api/join using your email , name and quiz_id","quiz_id":share.quiz_id,"question":quiz.question,"options":quiz.options}
 
 @router.post("/join")
 async def join(join:JoinRequest, db: Session = Depends(get_db)):
@@ -152,7 +156,7 @@ async def get_users(db: Session = Depends(get_db)):
 @router.get("/participants",dependencies=[Depends(JWTBearer())])
 async def get_users(db: Session = Depends(get_db),):
     participants = db.query(Participants).all()
-    return [{"id ":user.id,"email": user.email,"name":user.name, "score": user.score} for user in participants]
+    return [{"id ":user.id,"email": user.email,"name":user.name, "score": user.score if  user.score else 0} for user in participants]
 
 
 # Quiz endpoint
