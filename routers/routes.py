@@ -1,5 +1,6 @@
 # api/routes.py
 from sqlite3 import IntegrityError
+from typing import List
 from fastapi import APIRouter, FastAPI, Depends, HTTPException
 import psycopg2
 from sqlalchemy import create_engine
@@ -26,6 +27,7 @@ def get_db():
 class QuizRequest(BaseModel):
     title: str
     description: str
+    questions: List[dict]
     owner_id : int
 
 class QuestionRequest(BaseModel):
@@ -52,6 +54,16 @@ async def login(user: UserRequest, db: Session = Depends(get_db)):
     token = jwt.encode(payload, "secret", algorithm="HS256")
 
     return {"access_token": token}
+
+# Quiz endpoint
+@router.post("/api/quizzes")
+async def create_quiz(quiz: QuizRequest, db: Session = Depends(get_db)):
+    quiz_model = Quiz(title=quiz.title, questions=quiz.questions)
+    db.add(quiz_model)
+    db.commit()
+    db.refresh(quiz_model)
+    return {"id": quiz_model.id, "title": quiz_model.title, "questions": quiz_model.questions}
+
 
 @router.post("/register")
 async def create_user(user: UserRequest, db: Session = Depends(get_db)):

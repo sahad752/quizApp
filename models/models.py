@@ -1,5 +1,5 @@
 # models/models.py
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import JSON, create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -29,6 +29,7 @@ class Quiz(Base):
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
     owner_id = Column(Integer, nullable=False)
+    questions = Column(JSON)
 
 class Question(Base):
     __tablename__ = 'questions'
