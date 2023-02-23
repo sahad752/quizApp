@@ -70,6 +70,10 @@ async def login(user: UserRequest, db: Session = Depends(get_db)):
 # Quiz endpoint
 @router.post("/create_quiz",dependencies=[Depends(JWTBearer())])
 async def create_quiz(quiz: QuizRequest, db: Session = Depends(get_db)):
+
+    existing_quiz = db.query(Quiz).filter(Quiz.question == quiz.question).first()
+    if existing_quiz:
+        return {"error": "Question already exists in database"}
     quiz_model = Quiz(title=quiz.title, question=quiz.question,options = quiz.options ,answers = quiz.answers,owner_id = quiz.owner_id)
     db.add(quiz_model)
     db.commit()
@@ -92,7 +96,7 @@ async def join(join:JoinRequest, db: Session = Depends(get_db)):
         quiz = db.query(Quiz).filter_by(id=join.quiz_id).first()
     except:
         return {"Error": "Not a valid quiz id"}
-    
+
     participant= db.query(Participants).filter_by(email=join.email).first()
 
     if not participant:
@@ -118,10 +122,10 @@ async def join_quiz(quizanswer:QuizAnswer,db: Session = Depends(get_db)):
     correct_answer = quiz.answers
     if quizanswer.answer in correct_answer:
         correct = True
-    
+
     # Increment the score of the participant if the answer is correct
     if correct:
-       
+
         # Implement logic to increment the score of the participant with participant_id in the participants table
         participant = db.query(Participants).filter_by(id=quizanswer.participant_id).first()
         if participant.score == None :
@@ -130,7 +134,7 @@ async def join_quiz(quizanswer:QuizAnswer,db: Session = Depends(get_db)):
         db.commit()
     else:
         return {"message ": "Not a correct answer"}
-        
+
     return {"message": "Its a correct answer your score is {}".format(participant.score)}
 
 
